@@ -80,6 +80,7 @@ body {
   cursor: pointer;
   transition: transform 0.12s ease, box-shadow 0.15s ease, background 0.15s ease;
   text-transform: uppercase;
+  touch-action: manipulation;
 }
 
 .btn:hover {
@@ -139,6 +140,8 @@ body {
   justify-content: center;
   background: var(--navy);
   overflow: hidden;
+  padding: 16px;
+  box-sizing: border-box;
 }
 
 /* ── Logo / title ──────────────────────────────────────────────────────────── */
