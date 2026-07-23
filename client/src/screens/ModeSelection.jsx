@@ -1,5 +1,6 @@
 import React from 'react';
 import { playClick, playHover } from '../audio/audio.js';
+import '../styles/ModeSelection.css';
 
 const modes = [
   { id: 'quick',       icon: '⚡', label: 'Quick Match',    desc: 'Jump in with strangers online' },
@@ -21,26 +22,25 @@ export default function ModeSelection({ nav }) {
   }
 
   return (
-    <div className="screen" style={{ gap: 32 }}>
-      <div className="logo" style={{ fontSize: '2rem' }}>Select Mode</div>
+    <div className="screen mode-select-screen">
+      <div className="logo mode-select-title">Select Mode</div>
 
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, justifyContent: 'center', maxWidth: 640 }}>
+      <div className="mode-select-grid">
         {modes.map((m) => (
           <button
             key={m.id}
-            className="btn"
-            style={{ flexDirection: 'column', gap: 6, minWidth: 160, padding: '18px 24px' }}
+            className="btn mode-select-btn"
             onClick={() => pick(m.id)}
             onMouseEnter={playHover}
           >
-            <span style={{ fontSize: '2rem' }}>{m.icon}</span>
-            <span style={{ fontWeight: 700 }}>{m.label}</span>
-            <span style={{ fontSize: '0.75rem', opacity: 0.65, fontWeight: 400, textTransform: 'none' }}>{m.desc}</span>
+            <span className="mode-select-icon">{m.icon}</span>
+            <span className="mode-select-label">{m.label}</span>
+            <span className="mode-select-desc">{m.desc}</span>
           </button>
         ))}
       </div>
 
-      <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
+      <div className="mode-select-footer">
         <button className="btn btn-sm" onClick={() => { playClick(); nav('main-menu'); }} onMouseEnter={playHover}>
           ← Back
         </button>
