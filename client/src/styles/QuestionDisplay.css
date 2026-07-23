@@ -176,3 +176,30 @@
   color: rgba(255,255,255,0.3);
   font-style: italic;
 }
+
+@media (max-width: 480px) {
+  .question-display {
+    padding: 8px 10px;
+    gap: 6px;
+    max-width: 100%;
+  }
+
+  .question-text {
+    font-size: clamp(1rem, 5vw, 1.3rem);
+  }
+
+  .choice-btn {
+    padding: 10px 6px;
+    font-size: 0.9rem;
+  }
+
+  .text-answer-input {
+    padding: 10px 14px;
+    font-size: 1.4rem;
+  }
+
+  .peer-typing-display {
+    min-height: 40px;
+    padding: 6px 12px;
+  }
+}

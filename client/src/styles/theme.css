@@ -139,9 +139,28 @@ body {
   align-items: center;
   justify-content: center;
   background: var(--navy);
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   padding: 16px;
   box-sizing: border-box;
+}
+
+@media (max-width: 480px) {
+  .screen {
+    justify-content: flex-start;
+    padding: 12px 10px calc(24px + env(safe-area-inset-bottom));
+    gap: 20px !important;
+  }
+
+  .btn {
+    padding: 12px 22px;
+    font-size: 0.9rem;
+  }
+
+  .btn.btn-lg {
+    padding: 14px 30px;
+    font-size: 1.05rem;
+  }
 }
 
 /* ── Logo / title ──────────────────────────────────────────────────────────── */
