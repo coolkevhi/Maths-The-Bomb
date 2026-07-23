@@ -3,23 +3,18 @@
  *
  * Uses the Web Audio API for procedurally-generated tones as fallbacks,
  * and <audio> elements for real asset files.
- *
- * TODO: Drop your royalty-free sound files into /client/public/sounds/ and
- * update the paths in the ASSETS map below.
  */
 
 // ── Asset paths ─────────────────────────────────────────────────────────────
-// TODO: Replace with real files from freesound.org or Kenney's audio packs.
 const ASSETS = {
-  tick: "/sounds/tick.mp3", // bomb fuse fizz
-  explosion: "/sounds/explosion.mp3", // retro explode
-  correct: "/sounds/correct.mp3", // correct answer chime
-  wrong: "/sounds/wrong.mp3", // wrong answer buzzer
-  passBomb: "/sounds/pass_bomb.mp3", // fast swoosh when bomb is passed
-  hover: "/sounds/hover.mp3", // soft hover (no file — uses beep fallback)
-  click: "/sounds/click.mp3", // button press
-  menuMusic: "/sounds/menu_music.mp3", // 8-bit menu loop
-  matchMusic: "/sounds/match_music.mp3", // in-game background loop
+  tick: "/sounds/tick.mp3",
+  explosion: "/sounds/explosion.mp3",
+  correct: "/sounds/correct.mp3",
+  wrong: "/sounds/wrong.mp3",
+  passBomb: "/sounds/pass_bomb.mp3",
+  click: "/sounds/click.mp3",
+  menuMusic: "/sounds/menu_music.mp3",
+  matchMusic: "/sounds/match_music.mp3",
 };
 
 let ctx = null;
@@ -36,7 +31,7 @@ function getCtx() {
   return ctx;
 }
 
-// Global listener to unlock Web Audio context on user gesture (iOS / modern browser safety)
+// Global user-gesture listener for browser/mobile audio unlock
 if (typeof window !== "undefined") {
   const unlockContext = () => {
     if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
@@ -49,7 +44,7 @@ if (typeof window !== "undefined") {
   window.addEventListener("keydown", unlockContext);
 }
 
-// ── Procedural tone generator (fallback when no file is loaded) ───────────────
+// ── Procedural tone generator (synthesizer) ──────────────────────────────────
 
 function beep({
   frequency = 440,
@@ -74,32 +69,28 @@ function beep({
     osc.start(c.currentTime);
     osc.stop(c.currentTime + duration + decay);
   } catch (_) {
-    /* ignore AudioContext errors in restricted envs */
+    /* ignore AudioContext errors */
   }
 }
 
 // ── Real audio element loader ─────────────────────────────────────────────────
 
 const loaded = {};
-const failedAssets = new Set(); // Tracks 404/missing files so they don't leak memory or freeze
 
 function loadAudio(key) {
-  if (failedAssets.has(key)) return null;
+  if (!ASSETS[key]) return null;
   if (loaded[key]) return loaded[key];
 
   const el = new Audio(ASSETS[key]);
   el.preload = "auto";
   el.addEventListener("error", () => {
-    // File not found — mark as failed so it immediately falls back to procedural beep
-    failedAssets.add(key);
-    delete loaded[key];
+    loaded[key] = null;
   });
   loaded[key] = el;
   return el;
 }
 
 function playAsset(key, { volume = 1, loop = false, playbackRate = 1 } = {}) {
-  if (failedAssets.has(key)) return null;
   const el = loadAudio(key);
   if (!el) return null;
 
@@ -110,9 +101,7 @@ function playAsset(key, { volume = 1, loop = false, playbackRate = 1 } = {}) {
     el.playbackRate = playbackRate;
     const promise = el.play();
     if (promise !== undefined) {
-      promise.catch(() => {
-        if (el.error) failedAssets.add(key);
-      });
+      promise.catch(() => {});
     }
     return el;
   } catch (_) {
@@ -120,10 +109,9 @@ function playAsset(key, { volume = 1, loop = false, playbackRate = 1 } = {}) {
   }
 }
 
-// ── Clone-play helper (plays a fresh copy of an asset so overlapping calls don't cut each other off) ──
+// ── Clone-play helper (plays rapid overlapping sounds without cutting off) ────
 
 function playAssetClone(key, { volume = 1, playbackRate = 1 } = {}) {
-  if (failedAssets.has(key)) return null;
   const source = loadAudio(key);
   if (!source || !source.src) return null;
 
@@ -133,9 +121,7 @@ function playAssetClone(key, { volume = 1, playbackRate = 1 } = {}) {
     clone.playbackRate = playbackRate;
     const promise = clone.play();
     if (promise !== undefined) {
-      promise.catch(() => {
-        if (clone.error) failedAssets.add(key);
-      });
+      promise.catch(() => {});
     }
     return clone;
   } catch (_) {
@@ -149,20 +135,18 @@ let tickInterval = null;
 let currentTickIntervalMs = 0;
 
 export function startTicking(pctLeft = 1) {
-  const rate = Math.max(0.3, pctLeft); // playbackRate: slow when full, fast when empty
-  const intervalMs = Math.max(120, pctLeft * 900); // interval shrinks as time runs out
+  const rate = Math.max(0.3, pctLeft);
+  const intervalMs = Math.max(120, pctLeft * 900);
 
   if (tickInterval) clearInterval(tickInterval);
   currentTickIntervalMs = intervalMs;
 
   tickInterval = setInterval(() => {
-    // Clone the tick element each time so rapid ticks don't cancel each other
     const played = playAssetClone("tick", {
       volume: 0.5,
       playbackRate: 1 / rate,
     });
     if (!played) {
-      // Procedural tick fallback
       beep({ frequency: 800, duration: 0.04, type: "square", gainVal: 0.2 });
     }
   }, intervalMs);
@@ -172,10 +156,9 @@ export function updateTickRate(pctLeft) {
   if (!tickInterval) return;
   const intervalMs = Math.max(120, pctLeft * 900);
 
-  // Prevents continuously destroying and recreating setInterval on tiny socket packet updates
   if (Math.abs(intervalMs - currentTickIntervalMs) < 80) return;
 
-  startTicking(pctLeft); // restarts with new rate
+  startTicking(pctLeft);
 }
 
 export function stopTicking() {
@@ -185,7 +168,6 @@ export function stopTicking() {
   if (loaded.tick) loaded.tick.pause();
 }
 
-// Direct trigger helper exported for GameplayScreen
 export function playTick() {
   const played = playAssetClone("tick", { volume: 0.3 });
   if (!played) {
@@ -196,7 +178,7 @@ export function playTick() {
 // ── Sounds ────────────────────────────────────────────────────────────────────
 
 export function playExplosion() {
-  stopTicking(); // Instantly stops fuse tick when explosion plays
+  stopTicking();
   const el = playAsset("explosion", { volume: 0.9 });
   if (!el) {
     beep({ frequency: 80, duration: 0.8, type: "sawtooth", gainVal: 0.6 });
@@ -227,11 +209,9 @@ export function playWrong() {
   }
 }
 
+// Directly uses Web Audio API beep synthesizer for button hover
 export function playHover() {
-  const el = playAsset("hover", { volume: 0.3 });
-  if (!el) {
-    beep({ frequency: 1200, duration: 0.04, type: "sine", gainVal: 0.08 });
-  }
+  beep({ frequency: 1200, duration: 0.04, type: "sine", gainVal: 0.08 });
 }
 
 export function playClick() {
@@ -250,50 +230,20 @@ export function playPassBomb() {
 
 // ── Procedural music sequencer ────────────────────────────────────────────────
 
-// Calm 8-bit menu melody (C major feel, square-wave)
 const MENU_NOTES = [
-  [523, 0.5],
-  [659, 0.5],
-  [784, 0.5],
-  [659, 0.5],
-  [698, 0.5],
-  [880, 0.5],
-  [784, 1.0],
-  [0, 0.5],
-  [523, 0.5],
-  [587, 0.5],
-  [659, 0.5],
-  [523, 0.5],
-  [440, 0.5],
-  [523, 0.5],
-  [392, 1.0],
-  [0, 0.5],
+  [523, 0.5], [659, 0.5], [784, 0.5], [659, 0.5],
+  [698, 0.5], [880, 0.5], [784, 1.0], [0, 0.5],
+  [523, 0.5], [587, 0.5], [659, 0.5], [523, 0.5],
+  [440, 0.5], [523, 0.5], [392, 1.0], [0, 0.5],
 ];
 
-// Faster tension loop for in-match music
 const MATCH_NOTES = [
-  [392, 0.25],
-  [0, 0.25],
-  [392, 0.25],
-  [523, 0.5],
-  [440, 0.25],
-  [0, 0.25],
-  [440, 0.25],
-  [587, 0.5],
-  [392, 0.25],
-  [0, 0.25],
-  [349, 0.25],
-  [392, 0.5],
-  [330, 0.25],
-  [0, 0.25],
-  [0, 0.5],
-  [392, 0.25],
+  [392, 0.25], [0, 0.25], [392, 0.25], [523, 0.5],
+  [440, 0.25], [0, 0.25], [440, 0.25], [587, 0.5],
+  [392, 0.25], [0, 0.25], [349, 0.25], [392, 0.5],
+  [330, 0.25], [0, 0.25], [0, 0.5],   [392, 0.25],
 ];
 
-/**
- * Self-rescheduling note sequencer using setTimeout so timing stays tight.
- * Returns a stop() function.
- */
 function scheduleMusic(notes, tempoSec, gainVal, oscType) {
   let stopped = false;
   let tid = null;
@@ -341,22 +291,12 @@ export function toggleMenuMusicMute() {
       stopProceduralMenu = null;
     }
   } else {
-    // Unmuting: restart menu music from scratch
     startMenuMusic();
   }
   return musicMuted;
 }
 
-/**
- * Try to play the music file; if the file is missing (404/error), fall back to
- * the procedural sequencer so music always plays regardless of asset presence.
- */
 function tryPlayMusicFile(assetKey, volume, onFileFail) {
-  if (failedAssets.has(assetKey)) {
-    onFileFail();
-    return null;
-  }
-
   const el = new Audio(ASSETS[assetKey]);
   el.loop = true;
   el.volume = volume;
@@ -365,7 +305,6 @@ function tryPlayMusicFile(assetKey, volume, onFileFail) {
   const handleFail = () => {
     if (failed) return;
     failed = true;
-    failedAssets.add(assetKey);
     onFileFail();
   };
 
@@ -383,7 +322,6 @@ function tryPlayMusicFile(assetKey, volume, onFileFail) {
 export function startMenuMusic() {
   if (musicMuted) return;
 
-  // Prevents music from cutting out or restarting if it is already playing
   if (menuMusicEl && !menuMusicEl.paused) return;
   if (stopProceduralMenu) return;
 
@@ -442,8 +380,6 @@ export function stopAllMusic() {
     stopProceduralMatch = null;
   }
 }
-
-// ── Button sound hook helper ──────────────────────────────────────────────────
 
 export function addBtnSounds(el) {
   if (!el) return;
