@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useSocket } from '../hooks/useSocket.js';
+import { useSocket } from '../socket.js';
 import { playClick, playHover, startMenuMusic } from '../audio/audio.js';
 import { PlayerWallet } from '../engine/economy.js';
 import { recordGame } from '../engine/stats.js';
