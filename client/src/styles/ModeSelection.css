@@ -1,0 +1,91 @@
+.mode-select-screen {
+  gap: 32px;
+}
+
+.mode-select-title {
+  font-size: 2rem;
+}
+
+.mode-select-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  max-width: 640px;
+}
+
+.mode-select-btn {
+  flex-direction: column;
+  gap: 6px;
+  min-width: 160px;
+  padding: 18px 24px;
+}
+
+.mode-select-icon {
+  font-size: 2rem;
+}
+
+.mode-select-label {
+  font-weight: 700;
+}
+
+.mode-select-desc {
+  font-size: 0.75rem;
+  opacity: 0.65;
+  font-weight: 400;
+  text-transform: none;
+}
+
+.mode-select-footer {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+/* ── Mobile: shrink everything and pin Back/Stats so they're always
+   reachable without needing to scroll past the mode grid ──────────────── */
+@media (max-width: 600px) {
+  .mode-select-screen {
+    gap: 10px !important;
+    padding-bottom: 0 !important;
+  }
+
+  .mode-select-title {
+    font-size: 1.3rem;
+  }
+
+  .mode-select-grid {
+    gap: 8px;
+    width: 100%;
+  }
+
+  .mode-select-btn {
+    min-width: calc(50% - 4px);
+    flex: 1 1 calc(50% - 4px);
+    padding: 10px 8px !important;
+    gap: 3px;
+  }
+
+  .mode-select-icon {
+    font-size: 1.3rem;
+  }
+
+  .mode-select-label {
+    font-size: 0.8rem;
+  }
+
+  .mode-select-desc {
+    font-size: 0.62rem;
+  }
+
+  .mode-select-footer {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
+    margin-top: auto;
+    background: var(--navy);
+    flex-shrink: 0;
+  }
+}

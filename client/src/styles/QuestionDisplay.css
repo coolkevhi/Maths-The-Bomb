@@ -177,29 +177,65 @@
   font-style: italic;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
   .question-display {
-    padding: 8px 10px;
-    gap: 6px;
+    padding: 6px 8px;
+    gap: 5px;
     max-width: 100%;
   }
 
+  .question-meta {
+    gap: 5px;
+  }
+
+  .badge-topic,
+  .badge-diff {
+    font-size: 0.55rem;
+    padding: 1px 6px;
+  }
+
   .question-text {
-    font-size: clamp(1rem, 5vw, 1.3rem);
+    font-size: clamp(0.75rem, 4vw, 0.95rem);
   }
 
   .choice-btn {
-    padding: 10px 6px;
-    font-size: 0.9rem;
+    padding: 8px 5px;
+    font-size: 0.75rem;
   }
 
   .text-answer-input {
-    padding: 10px 14px;
-    font-size: 1.4rem;
+    padding: 8px 12px;
+    font-size: 1.1rem;
+    max-width: 160px;
+  }
+
+  .text-answer-submit {
+    min-width: 100px;
+    padding: 8px 16px !important;
+    font-size: 0.8rem !important;
   }
 
   .peer-typing-display {
-    min-height: 40px;
-    padding: 6px 12px;
+    min-height: 34px;
+    padding: 5px 10px;
+  }
+
+  .peer-typing-value {
+    font-size: 1.15rem;
+  }
+
+  .spectator-hint {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .question-text {
+    font-size: clamp(0.68rem, 4vw, 0.85rem);
+  }
+
+  .choice-btn {
+    font-size: 0.68rem;
+    padding: 7px 4px;
   }
 }
