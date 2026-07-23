@@ -12,7 +12,15 @@ export default function StatsScreen({ nav }) {
   const stats = loadStats();
 
   return (
-    <div className="screen" style={{ gap: 28 }}>
+    <div
+  className="screen"
+  style={{
+    gap: 28,
+    justifyContent: "flex-start",
+    paddingTop: 20,
+    paddingBottom: 90,
+  }}
+>
       <div className="logo" style={{ fontSize: '2rem' }}>📊 Stats</div>
 
       <div style={{

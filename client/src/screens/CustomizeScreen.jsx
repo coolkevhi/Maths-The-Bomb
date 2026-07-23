@@ -171,9 +171,30 @@ export default function CustomizeScreen({ nav }) {
       <CatalogSection title="🎯 Pass Animations"     items={CATALOG.handAnimations}     wallet={wallet} slot="handAnimation"     onPurchase={handlePurchase} onEquip={handleEquip} PreviewComponent={PassAnimPreview} />
       <CatalogSection title="😴 Idle Animations"     items={CATALOG.handIdleAnimations} wallet={wallet} slot="handIdleAnimation" onPurchase={handlePurchase} onEquip={handleEquip} PreviewComponent={IdleAnimPreview} />
 
-      <button className="btn btn-lg" style={{ marginTop: 24 }} onClick={() => { playClick(); nav('main-menu'); }} onMouseEnter={playHover}>
-        ← Back
-      </button>
+      <div
+  style={{
+    position: "sticky",
+    bottom: 10,
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    paddingTop: 20,
+    paddingBottom: "calc(10px + env(safe-area-inset-bottom))",
+    background: "var(--navy)",
+    zIndex: 100,
+  }}
+>
+  <button
+    className="btn btn-lg"
+    onClick={() => {
+      playClick();
+      nav("main-menu");
+    }}
+    onMouseEnter={playHover}
+  >
+    ← Back
+  </button>
+</div>
     </div>
   );
 }
