@@ -147,25 +147,34 @@ export default function GameplayScreen({ gameData, mode, nav }) {
 
     'turn-start': ({ playerId, question: q, difficulty: d }) => {
       const prevActiveId = activePIdRef.current;
+      const isRealPass = playerId !== prevActiveId;
 
-      // Play pass sound for every real pass (turn-start is only emitted when
-      // the bomb actually moves, so this is always audibly correct).
-      playPassBomb();
+      if (isRealPass) {
+        // Play pass sound only when the bomb actually moves to someone new.
+        playPassBomb();
 
-      // Show pass animation on the PASSER (old active player) for 400 ms,
-      // then switch highlight + bomb to the new player.
-      if (passingTimerRef.current) clearTimeout(passingTimerRef.current);
-      setBombPId(playerId);        // bomb flies to new player immediately
-      setIsPassing(true);          // pass anim fires on current (old) activePId
+        // Show pass animation on the PASSER (old active player) for 400 ms,
+        // then switch highlight + bomb to the new player.
+        if (passingTimerRef.current) clearTimeout(passingTimerRef.current);
+        setBombPId(playerId);        // bomb flies to new player immediately
+        setIsPassing(true);          // pass anim fires on current (old) activePId
 
-      passingTimerRef.current = setTimeout(() => {
+        passingTimerRef.current = setTimeout(() => {
+          activePIdRef.current = playerId;
+          setActivePId(playerId);
+          setIsPassing(false);
+        }, 400);
+
+        // Update ref immediately so next event sees the correct "previous" player
+        activePIdRef.current = playerId;
+      } else {
+        // Same player keeps the bomb (wrong-answer retry) — this is NOT a
+        // pass, so no sound and no throw animation. Just refresh the question.
         activePIdRef.current = playerId;
         setActivePId(playerId);
+        setBombPId(playerId);
         setIsPassing(false);
-      }, 400);
-
-      // Update ref immediately so next event sees the correct "previous" player
-      activePIdRef.current = playerId;
+      }
 
       setQuestion(q);
       setDifficulty(d);
