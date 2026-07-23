@@ -64,40 +64,47 @@
 
 /* ── Question panel ──────────────────────────────────────────────────────────*/
 .gameplay-question-panel {
-  /* Float the panel in the centre of the screen, overlaid on the arena */
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 30;
   width: calc(100% - 32px);
-  max-width: 500px;
+  max-width: 380px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  padding: 0;
-  max-height: 70vh;
+  gap: 8px;
+
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  transform: translate(-50%, -50%);
+
+  z-index: 30;
+
+  max-height: 50vh;
   overflow-y: auto;
 }
 
-@media (max-width: 600px) {
-  .gameplay-question-panel {
-    width: calc(100% - 20px);
-    max-height: 46vh;
-    top: 44%;
-    gap: 6px;
-  }
+@media (max-width:600px){
 
-  .gameplay-hud {
-    padding: 6px 10px;
-  }
+.gameplay-question-panel{
+    width:calc(100% - 30px);
+    max-width:260px;
+    max-height:34vh;
 
-  .hud-round, .hud-active, .hud-timer {
-    font-size: 0.7rem;
-  }
+    top:38%;
+
+    gap:4px;
 }
 
+.gameplay-hud{
+    padding:5px 8px;
+}
+
+.hud-round,
+.hud-active,
+.hud-timer{
+    font-size:.65rem;
+}
+
+}
 /* ── Round beat banner ───────────────────────────────────────────────────────*/
 .round-beat-banner {
   position: absolute;
