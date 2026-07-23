@@ -36,6 +36,19 @@ function getCtx() {
   return ctx;
 }
 
+// Global listener to unlock Web Audio context on user gesture (iOS / modern browser safety)
+if (typeof window !== "undefined") {
+  const unlockContext = () => {
+    if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
+    window.removeEventListener("click", unlockContext);
+    window.removeEventListener("touchstart", unlockContext);
+    window.removeEventListener("keydown", unlockContext);
+  };
+  window.addEventListener("click", unlockContext);
+  window.addEventListener("touchstart", unlockContext);
+  window.addEventListener("keydown", unlockContext);
+}
+
 // ── Procedural tone generator (fallback when no file is loaded) ───────────────
 
 function beep({
@@ -68,7 +81,7 @@ function beep({
 // ── Real audio element loader ─────────────────────────────────────────────────
 
 const loaded = {};
-const failedAssets = new Set(); // Tracks 404/missing files so they don't leak memory
+const failedAssets = new Set(); // Tracks 404/missing files so they don't leak memory or freeze
 
 function loadAudio(key) {
   if (failedAssets.has(key)) return null;
@@ -77,7 +90,7 @@ function loadAudio(key) {
   const el = new Audio(ASSETS[key]);
   el.preload = "auto";
   el.addEventListener("error", () => {
-    // File not found — mark failed so we immediately fall back to procedural beep
+    // File not found — mark as failed so it immediately falls back to procedural beep
     failedAssets.add(key);
     delete loaded[key];
   });
@@ -133,14 +146,14 @@ function playAssetClone(key, { volume = 1, playbackRate = 1 } = {}) {
 // ── Tick loop (bomb ticking, rate driven by pctLeft) ─────────────────────────
 
 let tickInterval = null;
-let currentIntervalMs = 0;
+let currentTickIntervalMs = 0;
 
 export function startTicking(pctLeft = 1) {
   const rate = Math.max(0.3, pctLeft); // playbackRate: slow when full, fast when empty
   const intervalMs = Math.max(120, pctLeft * 900); // interval shrinks as time runs out
 
   if (tickInterval) clearInterval(tickInterval);
-  currentIntervalMs = intervalMs;
+  currentTickIntervalMs = intervalMs;
 
   tickInterval = setInterval(() => {
     // Clone the tick element each time so rapid ticks don't cancel each other
@@ -159,8 +172,8 @@ export function updateTickRate(pctLeft) {
   if (!tickInterval) return;
   const intervalMs = Math.max(120, pctLeft * 900);
 
-  // FIX: Ignore tiny rate changes so setInterval isn't wiped out on every socket packet
-  if (Math.abs(intervalMs - currentIntervalMs) < 80) return;
+  // Prevents continuously destroying and recreating setInterval on tiny socket packet updates
+  if (Math.abs(intervalMs - currentTickIntervalMs) < 80) return;
 
   startTicking(pctLeft); // restarts with new rate
 }
@@ -168,13 +181,22 @@ export function updateTickRate(pctLeft) {
 export function stopTicking() {
   if (tickInterval) clearInterval(tickInterval);
   tickInterval = null;
-  currentIntervalMs = 0;
+  currentTickIntervalMs = 0;
   if (loaded.tick) loaded.tick.pause();
+}
+
+// Direct trigger helper exported for GameplayScreen
+export function playTick() {
+  const played = playAssetClone("tick", { volume: 0.3 });
+  if (!played) {
+    beep({ frequency: 800, duration: 0.04, type: "square", gainVal: 0.2 });
+  }
 }
 
 // ── Sounds ────────────────────────────────────────────────────────────────────
 
 export function playExplosion() {
+  stopTicking(); // Instantly stops fuse tick when explosion plays
   const el = playAsset("explosion", { volume: 0.9 });
   if (!el) {
     beep({ frequency: 80, duration: 0.8, type: "sawtooth", gainVal: 0.6 });
@@ -351,7 +373,7 @@ function tryPlayMusicFile(assetKey, volume, onFileFail) {
 
   const promise = el.play();
   if (promise !== undefined) {
-    promise.catch((err) => {
+    promise.catch(() => {
       if (el.error) handleFail();
     });
   }
@@ -361,11 +383,10 @@ function tryPlayMusicFile(assetKey, volume, onFileFail) {
 export function startMenuMusic() {
   if (musicMuted) return;
 
-  // FIX: Don't interrupt or restart menu music if it's already playing!
+  // Prevents music from cutting out or restarting if it is already playing
   if (menuMusicEl && !menuMusicEl.paused) return;
   if (stopProceduralMenu) return;
 
-  // Stop match music if returning from a match
   if (matchMusicEl) {
     matchMusicEl.pause();
     matchMusicEl = null;
@@ -384,7 +405,6 @@ export function startMenuMusic() {
 }
 
 export function startMatchMusic() {
-  // Stop menu music when a match begins
   if (menuMusicEl) {
     menuMusicEl.pause();
     menuMusicEl = null;
