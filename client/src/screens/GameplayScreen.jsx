@@ -8,7 +8,7 @@ import { PlayerWallet } from '../engine/economy.js';
 import {
   startTicking, updateTickRate, stopTicking,
   playExplosion, playCorrect, playWrong, playPassBomb,
-  startMatchMusic, stopAllMusic,
+  startMatchMusic, stopAllMusic, playClick, playHover
 } from '../audio/audio.js';
 import '../styles/GameplayScreen.css';
 
@@ -87,6 +87,14 @@ export default function GameplayScreen({ gameData, mode, nav }) {
   const arenaRef    = useRef(null);
   const [layout, setLayout] = useState({ cx: 200, cy: 200, rx: 170, ry: 130 });
 
+  // ── Unmount Cleanup (Stops ghost ticking sound and background music) ───────
+  useEffect(() => {
+    return () => {
+      stopTicking();
+      stopAllMusic();
+    };
+  }, []);
+
   // ── Measure arena on mount + resize (With Mobile Scaling) ───────────────────
   useEffect(() => {
     function measure() {
@@ -94,7 +102,6 @@ export default function GameplayScreen({ gameData, mode, nav }) {
       const { width, height } = arenaRef.current.getBoundingClientRect();
       const isMobile = width <= 600;
 
-      // Scaled radii to prevent player hands from going off-screen or touching central questions
       const rx = isMobile ? Math.min(width * 0.36, 135) : Math.min(width, height) * 0.34;
       const ry = isMobile ? Math.min(height * 0.28, 145) : Math.min(width, height) * 0.30;
 
@@ -156,14 +163,11 @@ export default function GameplayScreen({ gameData, mode, nav }) {
       const isRealPass = playerId !== prevActiveId;
 
       if (isRealPass) {
-        // Play pass sound only when the bomb actually moves to someone new.
         playPassBomb();
 
-        // Show pass animation on the PASSER (old active player) for 400 ms,
-        // then switch highlight + bomb to the new player.
         if (passingTimerRef.current) clearTimeout(passingTimerRef.current);
-        setBombPId(playerId);        // bomb flies to new player immediately
-        setIsPassing(true);          // pass anim fires on current (old) activePId
+        setBombPId(playerId);
+        setIsPassing(true);
 
         passingTimerRef.current = setTimeout(() => {
           activePIdRef.current = playerId;
@@ -171,11 +175,8 @@ export default function GameplayScreen({ gameData, mode, nav }) {
           setIsPassing(false);
         }, 400);
 
-        // Update ref immediately so next event sees the correct "previous" player
         activePIdRef.current = playerId;
       } else {
-        // Same player keeps the bomb (wrong-answer retry) — this is NOT a
-        // pass, so no sound and no throw animation. Just refresh the question.
         activePIdRef.current = playerId;
         setActivePId(playerId);
         setBombPId(playerId);
@@ -223,7 +224,6 @@ export default function GameplayScreen({ gameData, mode, nav }) {
     },
 
     'cycle-complete': ({ round, difficulty: d }) => {
-      // Only show the banner when difficulty actually went up
       if (d > difficultyRef.current) {
         difficultyRef.current = d;
         setDifficulty(d);
@@ -277,14 +277,13 @@ export default function GameplayScreen({ gameData, mode, nav }) {
     return activePlayer.cosmetics?.bomb || 'bomb_default';
   })();
 
-  // Bomb wrapper animation: bombFly on arrive, plus the pass animation if equipped
   const activePassAnimId = activePlayer?.id === myPlayerId
     ? myCosmetics.handAnimation
     : (activePlayer?.cosmetics?.handAnimation || 'anim_default');
   const bombPassAnim = isPassing && BOMB_PASS_ANIM[activePassAnimId];
   const bombWrapperAnimation = bombPassAnim
     ? `bombFly 0.4s ease-out, ${bombPassAnim}`
-    : undefined; // CSS class handles default bombFly
+    : undefined;
 
   const activePlayerSelection =
     activePId === myPlayerId ? myTyping : peerTyping[activePId] ?? null;
@@ -399,15 +398,15 @@ export default function GameplayScreen({ gameData, mode, nav }) {
             <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
               <button
                 className="btn btn-sm btn-danger"
-                onClick={() => { emit('leave'); nav('main-menu'); }}
-                onMouseEnter={() => import('../audio/audio.js').then(a => a.playHover())}
+                onClick={() => { playClick(); emit('leave'); nav('main-menu'); }}
+                onMouseEnter={playHover}
               >
                 Leave
               </button>
               <button
                 className="btn btn-sm"
-                onClick={() => { emit('leave'); nav('lobby', { mode }); }}
-                onMouseEnter={() => import('../audio/audio.js').then(a => a.playHover())}
+                onClick={() => { playClick(); emit('leave'); nav('lobby', { mode }); }}
+                onMouseEnter={playHover}
               >
                 🔄 Play Again
               </button>
@@ -416,7 +415,6 @@ export default function GameplayScreen({ gameData, mode, nav }) {
         )}
       </div>
 
-      {/* Inline keyframe for bombFly — kept here so it travels with the component */}
       <style>{`
         @keyframes bombFly {
           0%   { opacity: 0.6; transform: translate(-50%, -80%) scale(0.7); }
