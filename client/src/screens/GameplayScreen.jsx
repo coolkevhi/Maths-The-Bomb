@@ -87,16 +87,22 @@ export default function GameplayScreen({ gameData, mode, nav }) {
   const arenaRef    = useRef(null);
   const [layout, setLayout] = useState({ cx: 200, cy: 200, rx: 170, ry: 130 });
 
-  // ── Measure arena on mount + resize ─────────────────────────────────────────
+  // ── Measure arena on mount + resize (With Mobile Scaling) ───────────────────
   useEffect(() => {
     function measure() {
       if (!arenaRef.current) return;
       const { width, height } = arenaRef.current.getBoundingClientRect();
+      const isMobile = width <= 600;
+
+      // Scaled radii to prevent player hands from going off-screen or touching central questions
+      const rx = isMobile ? Math.min(width * 0.36, 135) : Math.min(width, height) * 0.34;
+      const ry = isMobile ? Math.min(height * 0.28, 145) : Math.min(width, height) * 0.30;
+
       setLayout({
-        cx: width  / 2,
+        cx: width / 2,
         cy: height / 2,
-        rx: Math.min(width, height) * 0.34,
-        ry: Math.min(width, height) * 0.30,
+        rx,
+        ry,
       });
     }
     measure();
@@ -260,7 +266,8 @@ export default function GameplayScreen({ gameData, mode, nav }) {
     ? playerPos(bombIdx, n, layout.cx, layout.cy, layout.rx, layout.ry)
     : { x: layout.cx, y: layout.cy };
 
-  const BOMB_SIZE = Math.max(56, Math.min(90, layout.rx * 0.45));
+  const isMobileScreen = window.innerWidth <= 600;
+  const BOMB_SIZE = isMobileScreen ? 46 : Math.max(56, Math.min(90, layout.rx * 0.45));
 
   const activePlayer = players.find((p) => p.id === activePId);
 
@@ -316,7 +323,7 @@ export default function GameplayScreen({ gameData, mode, nav }) {
           const isActive = p.id === activePId;
           const isElim   = eliminated.has(p.id);
           const isMe     = p.id === myPlayerId;
-          const HAND_SIZE = Math.max(44, Math.min(70, layout.rx * 0.35));
+          const HAND_SIZE = isMobileScreen ? 36 : Math.max(44, Math.min(70, layout.rx * 0.35));
 
           return (
             <div
