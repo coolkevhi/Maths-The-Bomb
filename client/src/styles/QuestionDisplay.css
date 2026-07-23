@@ -1,0 +1,178 @@
+.question-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: rgba(10, 14, 42, 0.9);
+  border: 2px solid rgba(0,255,136,0.3);
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+  max-width: 340px;
+  width: 100%;
+}
+
+.question-meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.badge-topic {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--green);
+  background: rgba(0,255,136,0.1);
+  border: 1px solid rgba(0,255,136,0.3);
+  border-radius: 4px;
+  padding: 2px 8px;
+}
+
+.badge-diff {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--gold);
+  background: rgba(255,215,0,0.1);
+  border: 1px solid rgba(255,215,0,0.3);
+  border-radius: 4px;
+  padding: 2px 8px;
+}
+
+.question-prompt {
+  text-align: center;
+}
+
+.question-text {
+  font-size: clamp(1.2rem, 3vw, 1.8rem);
+  font-weight: 900;
+  color: var(--white);
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.question-choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+}
+
+.choice-btn {
+  padding: 14px 10px;
+  background: var(--navy-mid);
+  border: 2px solid rgba(0,255,136,0.25);
+  border-radius: 10px;
+  color: var(--white);
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-family: var(--font-main);
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  text-align: center;
+}
+
+.choice-btn:hover:not(:disabled) {
+  border-color: var(--green);
+  transform: scale(1.04);
+  box-shadow: 0 0 12px var(--green-glow);
+  background: var(--navy-light);
+}
+
+.choice-btn:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.choice-btn:disabled {
+  opacity: 0.55;
+}
+
+.choice-btn--selected {
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 10px rgba(255,215,0,0.4) !important;
+  background: rgba(255,215,0,0.07) !important;
+}
+
+.spectator-hint {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.4);
+  font-style: italic;
+  margin: 0;
+}
+
+/* ── Free-text answer input ─────────────────────────────────────────────── */
+
+.text-answer-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.text-answer-input {
+  width: 100%;
+  max-width: 220px;
+  padding: 14px 18px;
+  font-size: 1.8rem;
+  font-weight: 900;
+  font-family: var(--font-main);
+  text-align: center;
+  background: var(--navy-mid);
+  border: 2px solid rgba(0,255,136,0.4);
+  border-radius: 12px;
+  color: var(--white);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  /* hide browser spin buttons */
+  -moz-appearance: textfield;
+}
+.text-answer-input::-webkit-inner-spin-button,
+.text-answer-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+.text-answer-input:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 14px var(--green-glow);
+}
+
+.text-answer-submit {
+  min-width: 140px;
+}
+
+/* ── Peer typing display (for watchers) ─────────────────────────────────── */
+
+.peer-typing-display {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 10px 20px;
+  background: rgba(0,255,136,0.05);
+  border: 1px solid rgba(0,255,136,0.2);
+  border-radius: 10px;
+  font-family: var(--font-main);
+}
+
+.peer-typing-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: rgba(0,255,136,0.6);
+  text-transform: uppercase;
+}
+
+.peer-typing-value {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--green);
+  letter-spacing: 0.04em;
+  min-width: 40px;
+  text-align: center;
+}
+
+.peer-typing-waiting {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.3);
+  font-style: italic;
+}

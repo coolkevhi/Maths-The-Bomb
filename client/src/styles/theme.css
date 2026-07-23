@@ -1,0 +1,423 @@
+/* ── Maths The Bomb — Global Theme ────────────────────────────────────────── */
+
+:root {
+  --navy:        #0a0e2a;
+  --navy-mid:    #111740;
+  --navy-light:  #1a2355;
+  --green:       #00ff88;
+  --green-dim:   #00cc66;
+  --green-glow:  rgba(0, 255, 136, 0.35);
+  --white:       #ffffff;
+  --off-white:   #dce8ff;
+  --red:         #ff3333;
+  --gold:        #ffd700;
+  --danger:      #ff4444;
+
+  --font-main: 'Segoe UI', 'Arial Rounded MT Bold', Arial, sans-serif;
+
+  --shadow-glow: 0 0 16px var(--green-glow), 0 0 32px rgba(0, 255, 136, 0.15);
+  --shadow-danger: 0 0 16px rgba(255, 60, 0, 0.6);
+
+  /* Flash overlay driven by JS via CSS variable */
+  --flash-opacity: 0;
+  --flash-speed: 1s;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-main);
+  background: var(--navy);
+  color: var(--white);
+  user-select: none;
+}
+
+/* ── Flash overlay ─────────────────────────────────────────────────────────── */
+.flash-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9000;
+  background: radial-gradient(ellipse at center, rgba(255,60,0,0.7) 0%, transparent 70%);
+  opacity: var(--flash-opacity);
+  transition: opacity 0.1s ease;
+}
+
+.flash-overlay.critical {
+  animation: criticalFlash var(--flash-speed) ease-in-out infinite alternate;
+}
+
+@keyframes criticalFlash {
+  from { opacity: 0.05; }
+  to   { opacity: 0.55; }
+}
+
+/* ── Buttons ───────────────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 36px;
+  background: var(--navy-mid);
+  color: var(--white);
+  border: 2px solid var(--green);
+  border-radius: 10px;
+  font-family: var(--font-main);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.15s ease, background 0.15s ease;
+  text-transform: uppercase;
+}
+
+.btn:hover {
+  transform: scale(1.06);
+  box-shadow: var(--shadow-glow);
+  background: var(--navy-light);
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn.btn-lg {
+  padding: 18px 48px;
+  font-size: 1.25rem;
+}
+
+.btn.btn-sm {
+  padding: 8px 20px;
+  font-size: 0.85rem;
+}
+
+.btn.btn-danger {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.btn.btn-danger:hover {
+  box-shadow: var(--shadow-danger);
+  background: rgba(255,50,50,0.1);
+}
+
+.btn.btn-gold {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.btn.btn-gold:hover {
+  box-shadow: 0 0 16px rgba(255,215,0,0.5);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ── Screen wrapper ────────────────────────────────────────────────────────── */
+.screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--navy);
+  overflow: hidden;
+}
+
+/* ── Logo / title ──────────────────────────────────────────────────────────── */
+.logo {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--white);
+  text-shadow:
+    0 0 20px var(--green-glow),
+    0 0 40px rgba(0,255,136,0.2);
+  line-height: 1;
+}
+
+.logo span {
+  color: var(--green);
+  text-shadow:
+    0 0 25px var(--green),
+    0 0 50px var(--green-glow);
+}
+
+.logo-bomb {
+  display: inline-block;
+  margin-left: 8px;
+  animation: bombBob 2.5s ease-in-out infinite;
+}
+
+@keyframes bombBob {
+  0%, 100% { transform: translateY(0) rotate(-5deg); }
+  50%       { transform: translateY(-8px) rotate(5deg); }
+}
+
+/* ── Input ─────────────────────────────────────────────────────────────────── */
+.input {
+  padding: 12px 18px;
+  background: var(--navy-mid);
+  border: 2px solid var(--green-dim);
+  border-radius: 8px;
+  color: var(--white);
+  font-size: 1rem;
+  font-family: var(--font-main);
+  width: 100%;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 10px var(--green-glow);
+}
+
+.input::placeholder {
+  color: rgba(255,255,255,0.3);
+}
+
+/* ── Card ──────────────────────────────────────────────────────────────────── */
+.card {
+  background: var(--navy-mid);
+  border: 1px solid rgba(0,255,136,0.2);
+  border-radius: 14px;
+  padding: 24px;
+}
+
+/* ── Stars / decoration ────────────────────────────────────────────────────── */
+.stars-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: var(--white);
+  border-radius: 50%;
+  opacity: 0.3;
+  animation: twinkle var(--dur, 3s) ease-in-out infinite var(--delay, 0s);
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.1; }
+  50%       { opacity: 0.7; }
+}
+
+/* ── Notification / toast ──────────────────────────────────────────────────── */
+.toast {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--navy-light);
+  border: 2px solid var(--green);
+  border-radius: 8px;
+  padding: 12px 28px;
+  font-weight: 700;
+  font-size: 1rem;
+  z-index: 8000;
+  animation: toastIn 0.3s ease;
+}
+
+.toast.error { border-color: var(--danger); color: var(--danger); }
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(-12px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ── Hand animations (used by PlayerHand in gameplay + customize) ──────────── */
+@keyframes handBounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+@keyframes handSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes handSlam {
+  from { transform: scaleY(1) translateY(0); }
+  to   { transform: scaleY(0.75) translateY(8px); }
+}
+@keyframes handPulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.22); }
+}
+@keyframes handShake {
+  0%, 100% { transform: translateX(0); }
+  25%       { transform: translateX(-6px); }
+  75%       { transform: translateX(6px); }
+}
+@keyframes handFloat {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-12px); }
+}
+@keyframes handWobble {
+  0%, 100% { transform: rotate(0deg); }
+  25%       { transform: rotate(-12deg); }
+  75%       { transform: rotate(12deg); }
+}
+@keyframes handBounceBig {
+  0%, 100% { transform: translateY(0) scaleY(1); }
+  45%       { transform: translateY(-22px) scaleY(1.05); }
+  55%       { transform: translateY(-22px) scaleY(1.05); }
+  90%       { transform: translateY(0) scaleY(0.88); }
+}
+@keyframes handFlash {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.15; }
+}
+@keyframes handOrbit {
+  0%   { transform: translateX(0)     translateY(0); }
+  25%  { transform: translateX(10px)  translateY(-8px); }
+  50%  { transform: translateX(0)     translateY(-16px); }
+  75%  { transform: translateX(-10px) translateY(-8px); }
+  100% { transform: translateX(0)     translateY(0); }
+}
+@keyframes handGlitch {
+  0%   { transform: translate(0,0)       skewX(0deg);  filter: none; }
+  20%  { transform: translate(-4px, 2px) skewX(4deg);  filter: hue-rotate(90deg); }
+  40%  { transform: translate(4px, -2px) skewX(-4deg); filter: hue-rotate(180deg); }
+  60%  { transform: translate(-2px, 3px) skewX(2deg);  filter: hue-rotate(270deg); }
+  80%  { transform: translate(3px, -1px) skewX(-2deg); filter: none; }
+  100% { transform: translate(0,0)       skewX(0deg);  filter: none; }
+}
+@keyframes handTwist {
+  0%, 100% { transform: scaleX(1)  rotate(0deg); }
+  30%       { transform: scaleX(-1) rotate(5deg); }
+  70%       { transform: scaleX(1)  rotate(-5deg); }
+}
+@keyframes handHeartbeat {
+  0%, 100% { transform: scale(1); }
+  14%       { transform: scale(1.28); }
+  28%       { transform: scale(1.05); }
+  42%       { transform: scale(1.18); }
+  56%       { transform: scale(1); }
+}
+@keyframes handRubber {
+  0%, 100% { transform: scaleX(1)    scaleY(1); }
+  20%       { transform: scaleX(0.8)  scaleY(1.3); }
+  45%       { transform: scaleX(1.25) scaleY(0.82); }
+  70%       { transform: scaleX(0.92) scaleY(1.12); }
+}
+@keyframes handJitter {
+  0%   { transform: translate(0,0); }
+  16%  { transform: translate(-3px, 2px); }
+  33%  { transform: translate(3px, -2px); }
+  50%  { transform: translate(-2px,-3px); }
+  66%  { transform: translate(2px,  3px); }
+  83%  { transform: translate(-3px, 1px); }
+  100% { transform: translate(0,0); }
+}
+
+/* ── Idle animations (holding the bomb) ────────────────────────────────────── */
+@keyframes idleSway {
+  0%, 100% { transform: translateX(0); }
+  50%       { transform: translateX(6px); }
+}
+@keyframes idleBreathe {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.09); }
+}
+@keyframes idleNod {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-5px); }
+}
+@keyframes idleTap {
+  0%, 80%, 100% { transform: translateY(0); }
+  90%            { transform: translateY(5px); }
+}
+@keyframes idleNervous {
+  0%, 100% { transform: translate(0, 0); }
+  25%       { transform: translate(-2px, 1px); }
+  50%       { transform: translate(2px, -1px); }
+  75%       { transform: translate(-1px, 2px); }
+}
+@keyframes idleSwing {
+  0%, 100% { transform: rotate(0deg); }
+  30%       { transform: rotate(-8deg); }
+  70%       { transform: rotate(8deg); }
+}
+@keyframes idleBob {
+  0%, 100% { transform: translateY(0) scaleY(1); }
+  50%       { transform: translateY(-6px) scaleY(1.04); }
+}
+@keyframes idleFidget {
+  0%   { transform: translate(0, 0)    rotate(0deg); }
+  20%  { transform: translate(-2px,-1px) rotate(-2deg); }
+  40%  { transform: translate(1px, 2px)  rotate(1deg); }
+  60%  { transform: translate(-1px, 1px) rotate(-1deg); }
+  80%  { transform: translate(2px,-2px)  rotate(2deg); }
+  100% { transform: translate(0, 0)    rotate(0deg); }
+}
+@keyframes idleSpinSlow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes idleRock {
+  0%, 100% { transform: rotate(0deg); }
+  25%       { transform: rotate(-6deg); }
+  75%       { transform: rotate(6deg); }
+}
+@keyframes idleBounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+@keyframes idleHover {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%       { transform: translateY(-6px) scale(1.06); }
+}
+@keyframes idleDance {
+  0%, 100% { transform: translateX(0)   scaleY(1); }
+  25%       { transform: translateX(-4px) scaleY(1.06) rotate(-3deg); }
+  75%       { transform: translateX(4px)  scaleY(0.94) rotate(3deg); }
+}
+@keyframes idlePace {
+  0%, 100% { transform: translateX(0); }
+  25%       { transform: translateX(-8px); }
+  75%       { transform: translateX(8px); }
+}
+
+/* ── Scrollbar ─────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--navy-mid); }
+::-webkit-scrollbar-thumb { background: var(--green-dim); border-radius: 3px; }
+
+/* ── Utilities ─────────────────────────────────────────────────────────────── */
+.text-green  { color: var(--green); }
+.text-red    { color: var(--red); }
+.text-gold   { color: var(--gold); }
+.text-center { text-align: center; }
+.mt-4  { margin-top: 1rem; }
+.mt-8  { margin-top: 2rem; }
+.mb-4  { margin-bottom: 1rem; }
+.gap-4 { gap: 1rem; }
+.gap-2 { gap: 0.5rem; }
+.flex  { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.w-full { width: 100%; }

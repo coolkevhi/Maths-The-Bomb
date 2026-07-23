@@ -1,0 +1,72 @@
+.main-menu-screen {
+  gap: 48px;
+}
+
+.main-menu-title {
+  text-align: center;
+}
+
+.main-menu-tagline {
+  margin-top: 12px;
+  color: var(--off-white);
+  font-size: 1.05rem;
+  opacity: 0.75;
+  letter-spacing: 0.03em;
+}
+
+.main-menu-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 300px;
+}
+
+.main-menu-btn {
+  width: 100%;
+  font-size: 1.15rem;
+}
+
+/* Mute toggle button */
+.menu-mute-btn {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--off-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, transform 0.1s;
+  z-index: 10;
+}
+.menu-mute-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  transform: scale(1.1);
+}
+.menu-mute-btn:active {
+  transform: scale(0.95);
+}
+
+/* Floating decorative bombs */
+.deco-bomb {
+  position: absolute;
+  font-size: 3rem;
+  opacity: 0.07;
+  pointer-events: none;
+  animation: decoFloat 6s ease-in-out infinite;
+}
+.deco-bomb--1 { bottom: 10%; left: 8%;  animation-duration: 7s; }
+.deco-bomb--2 { top: 15%;   right: 7%; animation-duration: 5s;  animation-delay: -2s; }
+.deco-bomb--3 { bottom: 20%; right: 15%; animation-duration: 9s; animation-delay: -4s; font-size: 2rem; }
+
+@keyframes decoFloat {
+  0%, 100% { transform: translateY(0) rotate(-8deg); }
+  50%       { transform: translateY(-20px) rotate(8deg); }
+}

@@ -1,0 +1,209 @@
+.customize-screen {
+  gap: 16px;
+}
+
+.balance-badge {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--gold);
+  background: var(--navy-mid);
+  border: 1px solid var(--gold);
+  border-radius: 20px;
+  padding: 6px 18px;
+  white-space: nowrap;
+}
+
+.catalog-section {
+  width: 100%;
+  max-width: 800px;
+}
+
+.catalog-section-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--green);
+  margin-bottom: 10px;
+  letter-spacing: 0.04em;
+}
+
+.catalog-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.catalog-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px;
+  background: var(--navy-mid);
+  border: 2px solid rgba(0,255,136,0.15);
+  border-radius: 12px;
+  width: 120px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.catalog-item--equipped {
+  border-color: var(--green);
+  box-shadow: 0 0 10px var(--green-glow);
+}
+
+.catalog-item--locked {
+  opacity: 0.75;
+}
+
+.catalog-item-preview {
+  position: relative;
+  width: 68px;
+  height: 68px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.3);
+  overflow: hidden;
+}
+
+.catalog-item-lock {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.55);
+  border-radius: 10px;
+  font-size: 1.4rem;
+  z-index: 2;
+}
+
+.catalog-item-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.catalog-item-name {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.catalog-item-cost {
+  font-size: 0.73rem;
+  color: var(--gold);
+}
+
+.catalog-item-actions {
+  margin-top: 4px;
+}
+
+.badge-equipped {
+  font-size: 0.72rem;
+  color: var(--green);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* ─── Hand animation keyframes ─────────────────────────────────────────── */
+
+@keyframes handBounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+
+@keyframes handSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes handSlam {
+  from { transform: scaleY(1) translateY(0); }
+  to   { transform: scaleY(0.75) translateY(8px); }
+}
+
+@keyframes handPulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.22); }
+}
+
+@keyframes handShake {
+  0%, 100% { transform: translateX(0); }
+  25%       { transform: translateX(-6px); }
+  75%       { transform: translateX(6px); }
+}
+
+@keyframes handFloat {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-12px); }
+}
+
+@keyframes handWobble {
+  0%, 100% { transform: rotate(0deg); }
+  25%       { transform: rotate(-12deg); }
+  75%       { transform: rotate(12deg); }
+}
+
+@keyframes handBounceBig {
+  0%, 100% { transform: translateY(0) scaleY(1); }
+  45%       { transform: translateY(-22px) scaleY(1.05); }
+  55%       { transform: translateY(-22px) scaleY(1.05); }
+  90%       { transform: translateY(0) scaleY(0.88); }
+}
+
+@keyframes handFlash {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.15; }
+}
+
+@keyframes handOrbit {
+  0%   { transform: translateX(0)    translateY(0); }
+  25%  { transform: translateX(10px) translateY(-8px); }
+  50%  { transform: translateX(0)    translateY(-16px); }
+  75%  { transform: translateX(-10px) translateY(-8px); }
+  100% { transform: translateX(0)    translateY(0); }
+}
+
+@keyframes handGlitch {
+  0%   { transform: translate(0, 0)      skewX(0deg); filter: none; }
+  20%  { transform: translate(-4px, 2px) skewX(4deg);  filter: hue-rotate(90deg); }
+  40%  { transform: translate(4px, -2px) skewX(-4deg); filter: hue-rotate(180deg); }
+  60%  { transform: translate(-2px, 3px) skewX(2deg);  filter: hue-rotate(270deg); }
+  80%  { transform: translate(3px, -1px) skewX(-2deg); filter: none; }
+  100% { transform: translate(0, 0)      skewX(0deg); filter: none; }
+}
+
+@keyframes handTwist {
+  0%, 100% { transform: scaleX(1)  rotate(0deg); }
+  30%       { transform: scaleX(-1) rotate(5deg); }
+  70%       { transform: scaleX(1)  rotate(-5deg); }
+}
+
+@keyframes handHeartbeat {
+  0%, 100% { transform: scale(1); }
+  14%       { transform: scale(1.28); }
+  28%       { transform: scale(1.05); }
+  42%       { transform: scale(1.18); }
+  56%       { transform: scale(1); }
+}
+
+@keyframes handRubber {
+  0%, 100% { transform: scaleX(1)    scaleY(1); }
+  20%       { transform: scaleX(0.8)  scaleY(1.3); }
+  45%       { transform: scaleX(1.25) scaleY(0.82); }
+  70%       { transform: scaleX(0.92) scaleY(1.12); }
+}
+
+@keyframes handJitter {
+  0%   { transform: translate(0,    0); }
+  16%  { transform: translate(-3px, 2px); }
+  33%  { transform: translate(3px, -2px); }
+  50%  { transform: translate(-2px, -3px); }
+  66%  { transform: translate(2px,  3px); }
+  83%  { transform: translate(-3px, 1px); }
+  100% { transform: translate(0,    0); }
+}

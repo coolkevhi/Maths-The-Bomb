@@ -1,0 +1,159 @@
+.gameplay-screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--navy);
+  overflow: hidden;
+}
+
+/* ── HUD ─────────────────────────────────────────────────────────────────────*/
+.gameplay-hud {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background: rgba(10,14,42,0.85);
+  border-bottom: 1px solid rgba(0,255,136,0.15);
+  flex-shrink: 0;
+}
+
+.hud-round, .hud-active, .hud-timer {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.hud-timer {
+  font-size: 1.1rem;
+  font-family: monospace;
+  transition: color 0.2s;
+}
+
+.hud-active {
+  color: var(--green);
+}
+
+/* ── Arena (circle layout) ───────────────────────────────────────────────────*/
+.gameplay-arena {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}
+
+.player-slot {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ── Bomb ─────────────────────────────────────────────────────────────────────*/
+.bomb-wrapper {
+  position: absolute;
+  z-index: 50;
+  /* No CSS position transition — the bomb remounts via React key on each
+     player change, which re-fires the bombFly animation cleanly and avoids
+     the visual ghost that appears when transition + animation run together. */
+  animation: bombFly 0.5s ease-out;
+  filter: drop-shadow(0 8px 16px rgba(0,0,0,0.6));
+}
+
+/* ── Question panel ──────────────────────────────────────────────────────────*/
+.gameplay-question-panel {
+  /* Float the panel in the centre of the screen, overlaid on the arena */
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 30;
+  width: calc(100% - 32px);
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+/* ── Round beat banner ───────────────────────────────────────────────────────*/
+.round-beat-banner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 200;
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--gold);
+  text-shadow: 0 0 20px rgba(255,215,0,0.7);
+  background: rgba(10,14,42,0.9);
+  border: 2px solid var(--gold);
+  border-radius: 12px;
+  padding: 16px 32px;
+  text-align: center;
+  animation: beatPop 0.4s ease-out, beatFade 2s ease-in forwards;
+  pointer-events: none;
+}
+
+@keyframes beatPop {
+  0%   { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+  60%  { transform: translate(-50%, -50%) scale(1.1); }
+  100% { transform: translate(-50%, -50%) scale(1);   opacity: 1; }
+}
+
+@keyframes beatFade {
+  0%, 60% { opacity: 1; }
+  100%    { opacity: 0; }
+}
+
+/* ── Game over flash ─────────────────────────────────────────────────────────*/
+.gameover-flash {
+  position: absolute;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.7);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 900;
+  color: var(--white);
+  animation: gameoverPop 0.5s ease-out;
+}
+
+@keyframes gameoverPop {
+  from { opacity: 0; transform: scale(1.3); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ── Spectator controls ──────────────────────────────────────────────────────*/
+.spectator-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px;
+}
+
+/* ── Typing indicator ────────────────────────────────────────────────────────*/
+.typing-indicator {
+  font-size: 0.7rem;
+  color: var(--gold);
+  background: rgba(255,215,0,0.1);
+  border: 1px solid rgba(255,215,0,0.3);
+  border-radius: 6px;
+  padding: 2px 6px;
+  margin-top: 4px;
+  white-space: nowrap;
+  animation: blink 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes blink {
+  from { opacity: 0.6; }
+  to   { opacity: 1;   }
+}
