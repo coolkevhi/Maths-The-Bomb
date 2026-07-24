@@ -12,7 +12,7 @@ const rules = [
 
 export default function HowToPlay({ nav }) {
   return (
-    <div className="screen" style={{ overflowY: 'auto', justifyContent: 'flex-start', padding: '40px 24px' }}>
+    <div className="screen" style={{ overflowY: 'auto', justifyContent: 'flex-start', padding: '20px 20px 90px' }}>
       <div className="logo" style={{ fontSize: '2rem', marginBottom: 8 }}>How to Play</div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16, maxWidth: 860, width: '100%', marginTop: 24 }}>
@@ -36,7 +36,8 @@ export default function HowToPlay({ nav }) {
 
       <button
         className="btn btn-lg"
-        style={{ marginTop: 28 }}
+        style={{ marginTop: 20,
+marginBottom: 30 }}
         onClick={() => { playClick(); nav('main-menu'); }}
         onMouseEnter={playHover}
       >
