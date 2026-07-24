@@ -111,7 +111,7 @@ export default function LobbyScreen({ mode, difficulty, nav, gameData }) {
     return (
       <div className="screen" style={{ gap: 20 }}>
         <div className="logo" style={{ fontSize: '2rem' }}>Enter Room Code</div>
-        <form onSubmit={handleJoinCode} style={{ display: 'flex', flexDirection: 'column', gap: 14, width: 300 }}>
+        <form onSubmit={handleJoinCode} style={{ display: 'flex', flexDirection: 'column', gap: 14, width: '100%', maxWidth: 300 }}>
           <input
             className="input"
             placeholder="Your name (optional)"
